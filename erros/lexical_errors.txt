@@ -1,0 +1,4 @@
+Erro Léxico: Caractere inesperado '[' na linha 3.
+Erro Léxico: Caractere inesperado ']' na linha 3.
+Erro Léxico: Caractere inesperado '$' na linha 5.
+Erro Léxico: Caractere inesperado '&' na linha 6.
