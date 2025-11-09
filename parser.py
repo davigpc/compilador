@@ -3,22 +3,13 @@ from symbol_table import SymbolTable, TableEntry
 
 
 class Parser:
-    """
-    Implementa o Analisador Sintático de Descida Recursiva para a Linguagem P.
-    Ele consome uma lista de tokens e verifica se ela segue a gramática.
-    Também constrói a Tabela de Símbolos.
-    """
-
     def __init__(self, tokens: list[Token]):
         self.tokens = tokens
         self.current = 0
         self.errors = []
         self.symbol_table = SymbolTable()
-
-        # Armazena a tabela de símbolos de cada função para o relatório final
+        
         self.function_tables = {}
-
-    # --- Métodos Principais de Parsing ---
 
     def parse_program(self) -> tuple[list[str], dict]:
         """
@@ -31,7 +22,7 @@ class Parser:
                 self.parse_function()
             except Exception as e:
                 self.errors.append(str(e))
-                self.synchronize()  # Tenta se recuperar para a próxima função
+                self.synchronize()
 
         if not self.is_at_end():
             self.errors.append(
@@ -52,11 +43,9 @@ class Parser:
 
         fun_name = self.advance().lexeme
 
-        # --- Tabela de Símbolos ---
         self.symbol_table.enter_scope()
         current_fun_table = self.symbol_table.get_current_scope()
         self.function_tables[fun_name] = current_fun_table
-        # --------------------------
 
         self.consume(TokenType.LBRACKET, f"Esperado '(' após o nome da função '{fun_name}'.")
 
@@ -72,7 +61,6 @@ class Parser:
         # Regra: Bloco -> { Sequencia }
         self.parse_bloco()
 
-        # Sai do escopo da função
         self.symbol_table.exit_scope()
 
     def parse_lista_params(self):
@@ -85,11 +73,9 @@ class Parser:
             self.consume(TokenType.COLON, "Esperado ':' após nome de parâmetro.")
             param_type = self.parse_type()
 
-            # Adiciona parâmetro à Tabela de Símbolos
             entry = TableEntry(param_token.lexeme, param_type, param_token.line, 'parameter')
             self.symbol_table.add_entry(entry)
 
-            # Loop para ListaParams2
             while self.match(TokenType.COMMA):
                 param_token = self.consume(TokenType.ID, "Esperado nome de parâmetro após vírgula.")
                 self.consume(TokenType.COLON, "Esperado ':' após nome de parâmetro.")
@@ -126,7 +112,7 @@ class Parser:
         """
         Regra: Sequencia -> Declaracao Sequencia | Comando Sequencia | ε
         """
-        # Uma sequência é zero ou mais declarações ou comandos
+        
         while self.peek().token_type != TokenType.RBRACE and not self.is_at_end():
             if self.peek().token_type == TokenType.LET:
                 self.parse_declaracao()
@@ -140,9 +126,8 @@ class Parser:
         """
         self.consume(TokenType.LET, "Esperado 'let'.")
 
-        var_tokens = []  # Armazena os tokens das variáveis declaradas
+        var_tokens = []  
 
-        # Parse VarList
         var_tokens.append(self.consume(TokenType.ID, "Esperado identificador (nome de variável)."))
         while self.match(TokenType.COMMA):
             var_tokens.append(self.consume(TokenType.ID, "Esperado identificador após vírgula."))
@@ -151,12 +136,9 @@ class Parser:
         var_type = self.parse_type()
         self.consume(TokenType.SEMICOLON, "Esperado ';' após declaração de variável.")
 
-        # Adiciona variáveis à Tabela de Símbolos
         for var_token in var_tokens:
             entry = TableEntry(var_token.lexeme, var_type, var_token.line, 'variable')
             self.symbol_table.add_entry(entry)
-
-    # --- Métodos de Parsing (Comandos) ---
 
     def parse_comando(self):
         """
@@ -242,8 +224,6 @@ class Parser:
         self.parse_expr()
         self.consume(TokenType.SEMICOLON, "Esperado ';' após expressão de 'return'.")
 
-    # --- Métodos de Parsing (Expressões e Precedência) ---
-
     def parse_expr(self):
         """ Regra: Expr -> Rel ExprOpc (Op: ==, !=) """
         self.parse_rel()
@@ -327,18 +307,13 @@ class Parser:
         else:
             raise Exception(f"Argumento inválido: {self.peek().lexeme}.")
 
-    # --- Métodos Auxiliares do Parser ---
-
     def peek(self) -> Token:
-        """ Retorna o token atual sem consumi-lo. """
         return self.tokens[self.current]
 
     def is_at_end(self) -> bool:
-        """ Verifica se chegou ao fim da lista de tokens. """
         return self.current >= len(self.tokens)
 
     def advance(self) -> Token:
-        """ Consome o token atual e avança para o próximo. """
         if not self.is_at_end():
             self.current += 1
         return self.tokens[self.current - 1]
@@ -368,10 +343,7 @@ class Parser:
             f"Erro Sintático na linha {self.peek().line}: {error_message} (Encontrado '{self.peek().lexeme}')")
 
     def synchronize(self):
-        """
-        Modo Pânico. Avança até encontrar um ponto de
-        recuperação (início de uma nova declaração ou comando).
-        """
+
         while not self.is_at_end():
             token_type = self.peek().token_type
 
