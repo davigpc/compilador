@@ -1,11 +1,9 @@
 import sys
 import os
-import json  # Importe json para salvar as tabelas
-
-# Importe as classes dos seus outros arquivos
+import json 
 from lexer import Lexer, Token
 from parser import Parser
-from symbol_table import TableEntry  # Necessário para o helper do JSON
+from symbol_table import TableEntry
 
 
 def write_to_file(filename: str, content: list):
@@ -65,12 +63,12 @@ def main():
     base_name = os.path.splitext(os.path.basename(source_file_path))[0]
 
     # Arquivos da Etapa 1 (Léxico)
-    tokens_output_file = os.path.join(SAIDAS_DIR, f"{base_name}_tokens.txt")  # Você pode manter ou remover isso
+    tokens_output_file = os.path.join(SAIDAS_DIR, f"{base_name}_tokens.txt")  
     lexical_errors_file = os.path.join(ERROS_DIR, f"{base_name}_lexical_errors.txt")
 
     # Arquivos da Etapa 2 (Sintático)
     syntactic_errors_file = os.path.join(ERROS_DIR, f"{base_name}_syntactic_errors.txt")
-    symbol_tables_file = os.path.join(SAIDAS_DIR, f"{base_name}_symbol_tables.json")  # Conforme especificação
+    symbol_tables_file = os.path.join(SAIDAS_DIR, f"{base_name}_symbol_tables.json") 
 
     # --- Leitura do Arquivo Fonte ---
     try:
@@ -91,13 +89,11 @@ def main():
     # Escreve erros léxicos (se houver)
     write_to_file(lexical_errors_file, lexical_errors)
 
-    # Se houver erros léxicos, NÃO continuamos para o parser
     if lexical_errors:
         print(f"Encontrados {len(lexical_errors)} erros léxicos. A compilação foi interrompida.")
         sys.exit(1)
     else:
         print("Nenhum erro léxico encontrado.")
-        # Opcional: Escreve os tokens se não houver erros
         write_to_file(tokens_output_file, tokens)
         print(f"Total de {len(tokens)} tokens reconhecidos.")
 
@@ -106,7 +102,7 @@ def main():
     parser = Parser(tokens)
     syntactic_errors, function_tables = parser.parse_program()
 
-    # Escreve os erros sintáticos (mesmo se a lista estiver vazia)
+    # Escreve os erros sintáticos
     write_to_file(syntactic_errors_file, syntactic_errors)
     if syntactic_errors:
         print(f"Encontrados {len(syntactic_errors)} erros sintáticos.")
