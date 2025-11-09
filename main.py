@@ -11,7 +11,7 @@ def write_to_file(filename: str, content: list):
     try:
         with open(filename, 'w', encoding='utf-8') as f:
             if not content:
-                f.write("")  # Garante que o arquivo seja criado mesmo se estiver vazio
+                f.write("")  
             else:
                 for item in content:
                     f.write(str(item) + '\n')
@@ -21,10 +21,6 @@ def write_to_file(filename: str, content: list):
 
 
 def write_symbol_tables_to_json(filename: str, tables: dict):
-    """
-    Escreve o dicionário de tabelas de símbolos (retornado pelo parser)
-    em um arquivo JSON formatado.
-    """
 
     def default_serializer(obj):
         """
@@ -53,7 +49,6 @@ def main():
 
     source_file_path = sys.argv[1]
 
-    # --- Configuração de Diretórios e Arquivos ---
     SAIDAS_DIR = "saidas"
     ERROS_DIR = "erros"
 
@@ -62,15 +57,12 @@ def main():
 
     base_name = os.path.splitext(os.path.basename(source_file_path))[0]
 
-    # Arquivos da Etapa 1 (Léxico)
     tokens_output_file = os.path.join(SAIDAS_DIR, f"{base_name}_tokens.txt")  
     lexical_errors_file = os.path.join(ERROS_DIR, f"{base_name}_lexical_errors.txt")
 
-    # Arquivos da Etapa 2 (Sintático)
     syntactic_errors_file = os.path.join(ERROS_DIR, f"{base_name}_syntactic_errors.txt")
     symbol_tables_file = os.path.join(SAIDAS_DIR, f"{base_name}_symbol_tables.json") 
 
-    # --- Leitura do Arquivo Fonte ---
     try:
         with open(source_file_path, 'r', encoding='utf-8') as f:
             source_code = f.read()
@@ -81,12 +73,10 @@ def main():
         print(f"Ocorreu um erro ao ler o arquivo: {e}")
         sys.exit(1)
 
-    # --- Fase 1: Análise Léxica ---
     print("Iniciando análise léxica...")
     lexer = Lexer(source_code)
     tokens, lexical_errors = lexer.scan_tokens()
 
-    # Escreve erros léxicos (se houver)
     write_to_file(lexical_errors_file, lexical_errors)
 
     if lexical_errors:
@@ -97,19 +87,16 @@ def main():
         write_to_file(tokens_output_file, tokens)
         print(f"Total de {len(tokens)} tokens reconhecidos.")
 
-    # --- Fase 2: Análise Sintática + Tabela de Símbolos ---
     print("Iniciando análise sintática...")
     parser = Parser(tokens)
     syntactic_errors, function_tables = parser.parse_program()
 
-    # Escreve os erros sintáticos
     write_to_file(syntactic_errors_file, syntactic_errors)
     if syntactic_errors:
         print(f"Encontrados {len(syntactic_errors)} erros sintáticos.")
     else:
         print("Nenhum erro sintático encontrado.")
 
-    # Escreve as tabelas de símbolos em JSON
     write_symbol_tables_to_json(symbol_tables_file, function_tables)
 
 
