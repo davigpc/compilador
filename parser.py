@@ -1,7 +1,4 @@
-# Importa as classes do seu analisador léxico
 from lexer import Token, TokenType
-
-# Importa as classes da sua tabela de símbolos
 from symbol_table import SymbolTable, TableEntry
 
 
@@ -21,7 +18,7 @@ class Parser:
         # Armazena a tabela de símbolos de cada função para o relatório final
         self.function_tables = {}
 
-    # --- Métodos Principais de Parsing (Estrutura) ---
+    # --- Métodos Principais de Parsing ---
 
     def parse_program(self) -> tuple[list[str], dict]:
         """
