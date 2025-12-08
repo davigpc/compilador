@@ -1,45 +1,45 @@
 import sys
 import os
-import json 
+import json
+from dataclasses import asdict
 from lexer import Lexer, Token
 from parser import Parser
 from symbol_table import TableEntry
+import ast_nodes
 
 
-def write_to_file(filename: str, content: list):
-    """Escreve o conteúdo de uma lista (erros) em um arquivo, um item por linha."""
-    try:
-        with open(filename, 'w', encoding='utf-8') as f:
-            if not content:
-                f.write("")  
-            else:
-                for item in content:
-                    f.write(str(item) + '\n')
-        print(f"Saída de erros escrita com sucesso em '{filename}'.")
-    except IOError as e:
-        print(f"Erro ao escrever no arquivo '{filename}': {e}")
+def write_json(filename: str, data: dict):
+    """Escreve dados (ASTs e Tabelas) em JSON formatado."""
 
-
-def write_symbol_tables_to_json(filename: str, tables: dict):
-
-    def default_serializer(obj):
-        """
-        Converte objetos (como TableEntry) em um dicionário
-        para que o JSON saiba como salvá-los.
-        """
+    def serializer(obj):
         if isinstance(obj, TableEntry):
             return obj.__dict__
-        raise TypeError(f"Objeto do tipo {obj.__class__.__name__} não é serializável por JSON")
+
+        # Se for um nó da ASA (dataclass), converte para dicionário
+        if hasattr(obj, '__dataclass_fields__'):
+            d = asdict(obj)
+            # Campo extra para saber o tipo do nó
+            d['_node_type'] = obj.__class__.__name__
+            return d
+
+        raise TypeError(f"Objeto {type(obj)} não serializável")
 
     try:
         with open(filename, 'w', encoding='utf-8') as f:
-            # Usa o 'default_serializer' para lidar com seus objetos TableEntry
-            json.dump(tables, f, default=default_serializer, indent=4, ensure_ascii=False)
-        print(f"Tabelas de símbolos escritas com sucesso em '{filename}'.")
-    except IOError as e:
-        print(f"Erro ao escrever tabelas de símbolos JSON em '{filename}': {e}")
-    except TypeError as e:
-        print(f"Erro ao serializar tabelas de símbolos: {e}")
+            json.dump(data, f, default=serializer, indent=2, ensure_ascii=False)
+        print(f"Arquivo gerado com sucesso: {filename}")
+    except Exception as e:
+        print(f"Erro ao salvar JSON {filename}: {e}")
+
+
+def write_errors(filename: str, errors: list):
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            for err in errors:
+                f.write(str(err) + '\n')
+        print(f"Log de erros gerado: {filename}")
+    except Exception as e:
+        print(f"Erro ao salvar erros {filename}: {e}")
 
 
 def main():
@@ -51,53 +51,57 @@ def main():
 
     SAIDAS_DIR = "saidas"
     ERROS_DIR = "erros"
-
     os.makedirs(SAIDAS_DIR, exist_ok=True)
     os.makedirs(ERROS_DIR, exist_ok=True)
 
     base_name = os.path.splitext(os.path.basename(source_file_path))[0]
 
-    tokens_output_file = os.path.join(SAIDAS_DIR, f"{base_name}_tokens.txt")  
+    # Nomes dos arquivos
     lexical_errors_file = os.path.join(ERROS_DIR, f"{base_name}_lexical_errors.txt")
-
     syntactic_errors_file = os.path.join(ERROS_DIR, f"{base_name}_syntactic_errors.txt")
-    symbol_tables_file = os.path.join(SAIDAS_DIR, f"{base_name}_symbol_tables.json") 
+    symbol_tables_file = os.path.join(SAIDAS_DIR, f"{base_name}_symbol_tables.json")
+    ast_file = os.path.join(SAIDAS_DIR, f"{base_name}_ast.json")
 
+    # 1. Leitura
     try:
         with open(source_file_path, 'r', encoding='utf-8') as f:
             source_code = f.read()
-    except FileNotFoundError:
-        print(f"Erro: O arquivo '{source_file_path}' não foi encontrado.")
-        sys.exit(1)
     except Exception as e:
-        print(f"Ocorreu um erro ao ler o arquivo: {e}")
+        print(f"Erro ao ler arquivo: {e}")
         sys.exit(1)
 
-    print("Iniciando análise léxica...")
+    # 2. Análise Léxica
+    print("--- Análise Léxica ---")
     lexer = Lexer(source_code)
     tokens, lexical_errors = lexer.scan_tokens()
 
-    write_to_file(lexical_errors_file, lexical_errors)
+    write_errors(lexical_errors_file, lexical_errors)
 
     if lexical_errors:
-        print(f"Encontrados {len(lexical_errors)} erros léxicos. A compilação foi interrompida.")
+        print(f"Encontrados {len(lexical_errors)} erros léxicos. Parando.")
         sys.exit(1)
     else:
-        print("Nenhum erro léxico encontrado.")
-        write_to_file(tokens_output_file, tokens)
-        print(f"Total de {len(tokens)} tokens reconhecidos.")
+        print(f"Sucesso! {len(tokens)} tokens gerados.")
 
-    print("Iniciando análise sintática...")
+    # 3. Análise Sintática e Semântica (ASA)
+    print("--- Análise Sintática e Semântica ---")
     parser = Parser(tokens)
-    syntactic_errors, function_tables = parser.parse_program()
 
-    write_to_file(syntactic_errors_file, syntactic_errors)
+    # O parser retorna ASAs
+    syntactic_errors, function_tables, function_asts = parser.parse_program()
+
+    write_errors(syntactic_errors_file, syntactic_errors)
+
     if syntactic_errors:
-        print(f"Encontrados {len(syntactic_errors)} erros sintáticos.")
+        print(f"Encontrados {len(syntactic_errors)} erros sintáticos/semânticos.")
     else:
-        print("Nenhum erro sintático encontrado.")
+        print("Sucesso! Nenhum erro sintático encontrado.")
 
-    write_symbol_tables_to_json(symbol_tables_file, function_tables)
+    # 4. Escrever Saídas (JSON)
+    write_json(symbol_tables_file, function_tables)
+    write_json(ast_file, function_asts)
+
+    print("Processo concluído.")
 
 
 if __name__ == "__main__":

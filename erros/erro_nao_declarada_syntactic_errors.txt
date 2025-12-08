@@ -1,0 +1,2 @@
+Erro Semântico na linha 4: Identificador 'b' não declarado.
+Erro Sintático: Token inesperado '}' na linha 5.

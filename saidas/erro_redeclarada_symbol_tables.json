@@ -1,0 +1,10 @@
+{
+  "main": {
+    "x": {
+      "lexema": "x",
+      "tipo": "int",
+      "num_linha": 2,
+      "kind": "variable"
+    }
+  }
+}

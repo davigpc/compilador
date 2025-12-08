@@ -1,0 +1,62 @@
+{
+  "fatorial": {
+    "n": {
+      "lexema": "n",
+      "tipo": "int",
+      "num_linha": 2,
+      "kind": "parameter"
+    }
+  },
+  "area_circulo": {
+    "raio": {
+      "lexema": "raio",
+      "tipo": "float",
+      "num_linha": 12,
+      "kind": "parameter"
+    },
+    "pi": {
+      "lexema": "pi",
+      "tipo": "float",
+      "num_linha": 13,
+      "kind": "variable"
+    }
+  },
+  "main": {
+    "i": {
+      "lexema": "i",
+      "tipo": "int",
+      "num_linha": 20,
+      "kind": "variable"
+    },
+    "max": {
+      "lexema": "max",
+      "tipo": "int",
+      "num_linha": 20,
+      "kind": "variable"
+    },
+    "resultado": {
+      "lexema": "resultado",
+      "tipo": "int",
+      "num_linha": 21,
+      "kind": "variable"
+    },
+    "raio": {
+      "lexema": "raio",
+      "tipo": "float",
+      "num_linha": 22,
+      "kind": "variable"
+    },
+    "area": {
+      "lexema": "area",
+      "tipo": "float",
+      "num_linha": 22,
+      "kind": "variable"
+    },
+    "status": {
+      "lexema": "status",
+      "tipo": "char",
+      "num_linha": 23,
+      "kind": "variable"
+    }
+  }
+}

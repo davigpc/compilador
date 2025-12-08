@@ -1,0 +1,36 @@
+{
+  "soma": {
+    "x": {
+      "lexema": "x",
+      "tipo": "int",
+      "num_linha": 1,
+      "kind": "parameter"
+    },
+    "y": {
+      "lexema": "y",
+      "tipo": "int",
+      "num_linha": 1,
+      "kind": "parameter"
+    }
+  },
+  "main": {
+    "a": {
+      "lexema": "a",
+      "tipo": "int",
+      "num_linha": 6,
+      "kind": "variable"
+    },
+    "b": {
+      "lexema": "b",
+      "tipo": "int",
+      "num_linha": 6,
+      "kind": "variable"
+    },
+    "c": {
+      "lexema": "c",
+      "tipo": "int",
+      "num_linha": 6,
+      "kind": "variable"
+    }
+  }
+}

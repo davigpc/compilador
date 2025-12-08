@@ -1,0 +1,337 @@
+{
+  "fatorial": {
+    "name": "fatorial",
+    "params": [
+      {
+        "name": "n",
+        "type": "int"
+      }
+    ],
+    "return_type": "int",
+    "body": {
+      "statements": [
+        {
+          "condition": {
+            "left": {
+              "name": "n"
+            },
+            "op": "<=",
+            "right": {
+              "value": 1,
+              "type": "int"
+            }
+          },
+          "then_branch": {
+            "statements": [
+              {
+                "value": {
+                  "value": 1,
+                  "type": "int"
+                }
+              }
+            ]
+          },
+          "else_branch": {
+            "statements": [
+              {
+                "value": {
+                  "left": {
+                    "name": "n"
+                  },
+                  "op": "*",
+                  "right": {
+                    "name": "fatorial",
+                    "args": [
+                      {
+                        "left": {
+                          "name": "n"
+                        },
+                        "op": "-",
+                        "right": {
+                          "value": 1,
+                          "type": "int"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "value": {
+            "value": 1,
+            "type": "int"
+          }
+        }
+      ]
+    },
+    "_node_type": "FunctionDecl"
+  },
+  "area_circulo": {
+    "name": "area_circulo",
+    "params": [
+      {
+        "name": "raio",
+        "type": "float"
+      }
+    ],
+    "return_type": "float",
+    "body": {
+      "statements": [
+        {
+          "names": [
+            "pi"
+          ],
+          "type": "float"
+        },
+        {
+          "name": "pi",
+          "value": {
+            "value": 3.14159,
+            "type": "float"
+          }
+        },
+        {
+          "value": {
+            "left": {
+              "left": {
+                "name": "pi"
+              },
+              "op": "*",
+              "right": {
+                "name": "raio"
+              }
+            },
+            "op": "*",
+            "right": {
+              "name": "raio"
+            }
+          }
+        }
+      ]
+    },
+    "_node_type": "FunctionDecl"
+  },
+  "main": {
+    "name": "main",
+    "params": [],
+    "return_type": "void",
+    "body": {
+      "statements": [
+        {
+          "names": [
+            "i",
+            "max"
+          ],
+          "type": "int"
+        },
+        {
+          "names": [
+            "resultado"
+          ],
+          "type": "int"
+        },
+        {
+          "names": [
+            "raio",
+            "area"
+          ],
+          "type": "float"
+        },
+        {
+          "names": [
+            "status"
+          ],
+          "type": "char"
+        },
+        {
+          "name": "max",
+          "value": {
+            "value": 5,
+            "type": "int"
+          }
+        },
+        {
+          "name": "i",
+          "value": {
+            "value": 0,
+            "type": "int"
+          }
+        },
+        {
+          "name": "status",
+          "value": {
+            "value": "'A'",
+            "type": "char"
+          }
+        },
+        {
+          "condition": {
+            "left": {
+              "name": "i"
+            },
+            "op": "<",
+            "right": {
+              "name": "max"
+            }
+          },
+          "body": {
+            "statements": [
+              {
+                "name": "resultado",
+                "value": {
+                  "name": "fatorial",
+                  "args": [
+                    {
+                      "name": "i"
+                    }
+                  ]
+                }
+              },
+              {
+                "fmt_string": "\"Fatorial de {} eh {}\"",
+                "args": [
+                  {
+                    "name": "i"
+                  },
+                  {
+                    "name": "resultado"
+                  }
+                ]
+              },
+              {
+                "name": "i",
+                "value": {
+                  "left": {
+                    "name": "i"
+                  },
+                  "op": "+",
+                  "right": {
+                    "value": 1,
+                    "type": "int"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "raio",
+          "value": {
+            "value": 2.5,
+            "type": "float"
+          }
+        },
+        {
+          "name": "area",
+          "value": {
+            "name": "area_circulo",
+            "args": [
+              {
+                "name": "raio"
+              }
+            ]
+          }
+        },
+        {
+          "condition": {
+            "left": {
+              "name": "area"
+            },
+            "op": ">",
+            "right": {
+              "value": 10.0,
+              "type": "float"
+            }
+          },
+          "then_branch": {
+            "statements": [
+              {
+                "condition": {
+                  "left": {
+                    "name": "status"
+                  },
+                  "op": "==",
+                  "right": {
+                    "value": "'A'",
+                    "type": "char"
+                  }
+                },
+                "then_branch": {
+                  "statements": [
+                    {
+                      "fmt_string": "\"Area grande e status Ativo: {}\"",
+                      "args": [
+                        {
+                          "name": "area"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "else_branch": {
+                  "statements": [
+                    {
+                      "fmt_string": "\"Area grande mas status Inativo\"",
+                      "args": []
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "else_branch": {
+            "statements": [
+              {
+                "fmt_string": "\"Area pequena: {}\"",
+                "args": [
+                  {
+                    "name": "area"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "resultado",
+          "value": {
+            "left": {
+              "left": {
+                "value": 100,
+                "type": "int"
+              },
+              "op": "-",
+              "right": {
+                "left": {
+                  "value": 2,
+                  "type": "int"
+                },
+                "op": "*",
+                "right": {
+                  "value": 10,
+                  "type": "int"
+                }
+              }
+            },
+            "op": "+",
+            "right": {
+              "left": {
+                "value": 5,
+                "type": "int"
+              },
+              "op": "/",
+              "right": {
+                "value": 1,
+                "type": "int"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "_node_type": "FunctionDecl"
+  }
+}

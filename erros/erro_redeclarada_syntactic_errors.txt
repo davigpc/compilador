@@ -1,0 +1,2 @@
+Erro Semântico na linha 4: O identificador 'x' já foi declarado neste escopo.
+Erro Sintático: Token inesperado '}' na linha 5.

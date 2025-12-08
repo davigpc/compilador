@@ -1,17 +1,18 @@
 class TableEntry(object):
 
     def __init__(self, lexema: str, tipo: str, num_linha: int, kind: str):
-        self.lexema = lexema  
+        self.lexema = lexema
         self.tipo = tipo
         self.num_linha = num_linha
         self.kind = kind
 
     def __repr__(self):
-        return f"(Lexema: {self.lexema}, Tipo: {self.tipo}, Kind: {self.kind}, Linha: {self.num_linha})"
+        # Simplificado para o JSON ficar limpo
+        return f"{{lexema: {self.lexema}, tipo: {self.tipo}, kind: {self.kind}, linha: {self.num_linha}}}"
 
 
 class SymbolTable:
-    
+
     def __init__(self):
         self.scopes = [{}]
 
@@ -27,8 +28,10 @@ class SymbolTable:
     def add_entry(self, entry: TableEntry):
         current_scope = self.scopes[-1]
 
+        # --- Regra de Variável Redeclarada ---
         if entry.lexema in current_scope:
-            pass
+            raise Exception(
+                f"Erro Semântico na linha {entry.num_linha}: O identificador '{entry.lexema}' já foi declarado neste escopo.")
 
         current_scope[entry.lexema] = entry
 
@@ -37,7 +40,7 @@ class SymbolTable:
             if lexema in scope:
                 return scope[lexema]
 
-        return None 
+        return None
 
     def get_current_scope(self) -> dict[str, TableEntry]:
         return self.scopes[-1]

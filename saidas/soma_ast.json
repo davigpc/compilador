@@ -1,0 +1,86 @@
+{
+  "soma": {
+    "name": "soma",
+    "params": [
+      {
+        "name": "x",
+        "type": "int"
+      },
+      {
+        "name": "y",
+        "type": "int"
+      }
+    ],
+    "return_type": "int",
+    "body": {
+      "statements": [
+        {
+          "value": {
+            "left": {
+              "name": "x"
+            },
+            "op": "+",
+            "right": {
+              "name": "y"
+            }
+          }
+        }
+      ]
+    },
+    "_node_type": "FunctionDecl"
+  },
+  "main": {
+    "name": "main",
+    "params": [],
+    "return_type": "void",
+    "body": {
+      "statements": [
+        {
+          "names": [
+            "a",
+            "b",
+            "c"
+          ],
+          "type": "int"
+        },
+        {
+          "name": "b",
+          "value": {
+            "value": 40,
+            "type": "int"
+          }
+        },
+        {
+          "name": "c",
+          "value": {
+            "value": 39,
+            "type": "int"
+          }
+        },
+        {
+          "name": "a",
+          "value": {
+            "name": "soma",
+            "args": [
+              {
+                "name": "b"
+              },
+              {
+                "name": "c"
+              }
+            ]
+          }
+        },
+        {
+          "fmt_string": "\"{}\"",
+          "args": [
+            {
+              "name": "a"
+            }
+          ]
+        }
+      ]
+    },
+    "_node_type": "FunctionDecl"
+  }
+}
